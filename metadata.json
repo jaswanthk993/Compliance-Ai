@@ -1,0 +1,8 @@
+{
+  "name": "AI Compliance Copilot",
+  "description": "A Cloud Run-ready multimodal compliance agent that analyzes policies and evidence using Gemini 2.5.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
