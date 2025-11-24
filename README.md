@@ -1,20 +1,193 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# AI Compliance Copilot
 
-# Run and deploy your AI Studio app
+An AI-powered compliance assistant that helps organizations detect policy violations by analyzing documents, images, and logs. Built on **Google Cloud Run**, **Gemini**, and a **hybrid data architecture**, this tool automates compliance checks that typically take hours.
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/drive/1ddtNGvP3uy8DyjJNoA2Fx7LJsuJz_sJn
+## Overview
 
-## Run Locally
+Compliance teams spend a lot of time reading policies, scanning evidence, and preparing reports. This app brings all of that together into a single workflow:
 
-**Prerequisites:**  Node.js
+1. Upload a **policy document** (PDF).
+2. Upload **evidence** (image or logs).
+3. The AI extracts rules, analyzes evidence, and compares them.
+4. You receive a clear list of violations, risk score, and a downloadable report.
+
+The goal is simple:
+Make compliance audits faster, clearer, and more reliable using AI.
+
+---
+
+## Key Features
+
+### Policy Understanding
+
+* Upload PDFs and documents.
+* Gemini extracts key rules, summaries, and structured text.
+* Policy metadata stored for every session.
+
+### Evidence Analysis (Multimodal)
+
+* Upload images of equipment, people, or environments.
+* Gemini Vision detects PPE, behaviors, or safety issues.
+* CSV logs can be uploaded and summarized.
+
+### AI-Driven Compliance Checking
+
+* Extract policy rules → analyze evidence → generate violations.
+* Clear risk scoring (Low / Medium / High).
+* Suggested corrective actions.
+
+### RAG-Based Q&A
+
+Ask questions like:
+
+> “Is this action allowed under Section 3.2?”
+> The system pulls relevant text and answers with citations.
+
+### Reports & History
+
+* Auto-generated PDF reports.
+* Downloadable from dashboard.
+* Session history for previous checks.
+
+### Hybrid Storage Layer
+
+Uses managed cloud services to store and analyze all inputs:
+
+* Cloud Storage → PDFs, images, and reports
+* Firestore → rule metadata and session data
+* BigQuery → logs and trend analytics
+
+### Cloud-Native Deployment
+
+* Fully deployed on Google Cloud Run
+* Autoscaling backend
+* Secure IAM roles
+* Scheduled tasks (optional) for periodic re-evaluation
+
+---
+
+## Architecture (High-Level)
+
+Frontend
+
+* React interface for uploads, analysis, and reports
+* Simple and clean dashboard
+* Calls backend through secure API routes
+
+**Backend (Cloud Run)**
+
+* FastAPI or Node.js service
+* Handles uploads, Gemini calls, ADK workflows
+* Stores all results in GCS, Firestore, and BigQuery
+
+**AI Layer (Gemini + ADK)**
+
+* Gemini for multimodal vision + text
+* Rule extraction from policy documents
+* Violation detection from evidence
+* RAG for question-answering
+* ADK orchestrates the entire end-to-end flow
+
+**Storage**
+
+* GCS: raw files + final reports
+* Firestore: extracted rules + sessions
+* BigQuery: audit logs + analytics
+
+---
+
+## Folder Structure
+
+```
+root
+│── frontend/               # React app (UI)
+│── backend/                # Cloud Run API (FastAPI / Node backend)
+│── services/               # AI services, ADK orchestration logic
+│── cloud/                  # IAM, scheduler, deployment scripts
+│── reports/                # Generated reports (optional local dir)
+│── README.md               # Project documentation
+│── package.json / reqs.txt # Dependencies
+```
+
+---
+
+## **Getting Started**
+
+### **1. Clone the repo**
+
+```bash
+git clone https://github.com/<your-repo>/ai-compliance-copilot.git
+cd ai-compliance-copilot
+```
+
+### **2. Install frontend dependencies**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### **3. Backend setup**
+
+Ensure you have:
+
+* GCP project
+* Cloud Run
+* Service account with required roles
+* Gemini access enabled
+
+Add environment variables or use Secret Manager.
+
+### **4. Deploy to Cloud Run**
+
+Use your deploy script:
+
+```bash
+gcloud builds submit --tag gcr.io/<PROJECT_ID>/compliance-copilot
+gcloud run deploy compliance-copilot --image gcr.io/<PROJECT_ID>/compliance-copilot
+```
+
+---
+
+## **Tech Stack**
+
+* **React** – Dashboard UI
+* **FastAPI / Node.js** – Backend service
+* **Google Cloud Run** – Serverless compute
+* **Google Cloud Storage** – File storage
+* **Firestore** – Metadata storage
+* **BigQuery** – Analytics
+* **Gemini (Vertex AI)** – Multimodal intelligence
+* **ADK** – Agent orchestration
+
+---
+
+## **Why This Project Matters**
+
+Most compliance audits are slow, manual, and prone to error.
+This project shows how modern AI, combined with serverless cloud architecture, can automate real compliance work in factories, healthcare, retail, and finance.
+
+It gives users an assistant that:
+
+* Reads their rulebook
+* Looks at their evidence
+* Gives them actionable feedback
+
+All within seconds.
+
+---
+
+## **Roadmap**
+
+* [ ] Add real-time CCTV compliance stream
+* [ ] Add multi-user roles (Supervisor, Admin)
+* [ ] Add multilingual policy support
+* [ ] Add Slack/Email alerting
+* [ ] Expand analytics dashboard
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+
+Just tell me which one you want.
