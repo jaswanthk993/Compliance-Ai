@@ -180,14 +180,10 @@ All within seconds.
 
 ---
 
-## **Roadmap**
+## **Future Extensions**
 
 * [ ] Add real-time CCTV compliance stream
 * [ ] Add multi-user roles (Supervisor, Admin)
 * [ ] Add multilingual policy support
 * [ ] Add Slack/Email alerting
-* [ ] Expand analytics dashboard
-
-
-
-Just tell me which one you want.
+* [ ] Expand analytics dashboard.
