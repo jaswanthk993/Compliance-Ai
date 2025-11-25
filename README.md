@@ -139,6 +139,7 @@ Compliance-Ai/
 └── README.md
 
 ---
+````
 
 ## **Getting Started**
 
@@ -147,7 +148,7 @@ Compliance-Ai/
 ```bash
 git clone https://github.com/<your-repo>/ai-compliance-copilot.git
 cd ai-compliance-copilot
-```
+`````
 
 ### **2. Install frontend dependencies**
 
