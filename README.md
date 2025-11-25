@@ -96,6 +96,9 @@ Frontend
 * Firestore: extracted rules + sessions
 * BigQuery: audit logs + analytics
 
+
+![WhatsApp Image 2025-11-24 at 11 30 34 PM](https://github.com/user-attachments/assets/aec65886-0f22-4c23-a5bd-ad1340d83e57)
+
 ---
 
 ## Folder Structure
