@@ -104,15 +104,39 @@ Uses managed cloud services to store and analyze all inputs:
 ## **Folder Structure**
 
 ```
-root
-│── frontend/               # React app (UI)
-│── backend/                # Cloud Run API (FastAPI / Node backend)
-│── services/               # AI services, ADK orchestration logic
-│── cloud/                  # IAM, scheduler, deployment scripts
-│── reports/                # Generated reports (optional local dir)
-│── README.md               # Project documentation
-│── package.json / reqs.txt # Dependencies
-```
+Compliance-Ai/
+│
+├── App.tsx
+├── index.tsx
+├── index.html
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── cloudbuild.yaml
+├── Dockerfile
+├── nginx.conf
+├── setup_gcp.sh
+├── metadata.json
+│
+├── components/
+│   ├── ChatInterface.tsx
+│   ├── CopilotWidget.tsx
+│   ├── Dashboard.tsx
+│   ├── EvidenceAnalyzer.tsx
+│   ├── Login.tsx
+│   ├── PolicyManager.tsx
+│   └── Reports.tsx
+│
+├── services/
+│   ├── agentSystem.ts
+│   └── geminiService.ts
+│
+├── docs/
+│   ├── agent_flow.md
+│   ├── api_reference.md
+│   └── architecture.md
+│
+└── README.md
 
 ---
 
