@@ -1,0 +1,33 @@
+
+steps:
+  # 1. Build the Docker image
+  # Uses the official Docker builder
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/compliance-copilot:latest', '.']
+
+  # 2. Push the Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/compliance-copilot:latest']
+
+  # 3. Deploy the container to Cloud Run
+  # Using the specific service account created in setup_gcp.sh
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'compliance-copilot'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/compliance-copilot:latest'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--service-account'
+      - 'cloud-run-compliance-bot@$PROJECT_ID.iam.gserviceaccount.com'
+      - '--set-env-vars'
+      - 'GCS_BUCKET_NAME=$PROJECT_ID-compliance-data,BIGQUERY_DATASET=compliance_logs'
+
+images:
+  - 'gcr.io/$PROJECT_ID/compliance-copilot:latest'

@@ -2,6 +2,7 @@
 import React from 'react';
 import { LayoutDashboard, FileText, Upload, MessageSquare, PieChart, ShieldAlert, Sun, Moon, LogOut } from 'lucide-react';
 import { Policy } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -9,10 +10,11 @@ interface SidebarProps {
   activePolicy: Policy | null;
   isDarkMode: boolean;
   toggleTheme: () => void;
-  onLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activePolicy, isDarkMode, toggleTheme, onLogout }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activePolicy, isDarkMode, toggleTheme }) => {
+  const { signOut } = useAuth();
+  
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'policy', label: 'Policy Management', icon: FileText },
@@ -78,7 +80,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activePolicy
 
         {/* Logout Button */}
         <button
-          onClick={onLogout}
+          onClick={() => signOut()}
           className="w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-900/20 hover:text-red-300 rounded-lg transition-all"
         >
           <LogOut size={18} />

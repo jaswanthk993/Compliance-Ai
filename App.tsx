@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import PolicyManager from './components/PolicyManager';
@@ -9,33 +9,15 @@ import Reports from './components/Reports';
 import CopilotWidget from './components/CopilotWidget';
 import Login from './components/Login';
 import { Policy, AnalysisResult } from './types';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Loader2 } from 'lucide-react';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
-const App: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const AppContent: React.FC = () => {
+  const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [activePolicy, setActivePolicy] = useState<Policy | null>(null);
   const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Check for existing session on load
-  useEffect(() => {
-    const session = sessionStorage.getItem('auth_token');
-    if (session) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  const handleLogin = () => {
-    sessionStorage.setItem('auth_token', 'demo-token-123');
-    setIsAuthenticated(true);
-  };
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('auth_token');
-    setIsAuthenticated(false);
-    setActiveTab('dashboard');
-  };
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
@@ -54,8 +36,16 @@ const App: React.FC = () => {
     }
   };
 
-  if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />;
+  if (loading) {
+      return (
+          <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+          </div>
+      );
+  }
+
+  if (!user) {
+    return <Login />;
   }
 
   return (
@@ -66,7 +56,6 @@ const App: React.FC = () => {
         activePolicy={activePolicy} 
         isDarkMode={isDarkMode}
         toggleTheme={toggleTheme}
-        onLogout={handleLogout}
       />
       
       <main className="flex-1 ml-64 h-screen overflow-auto relative">
@@ -84,9 +73,9 @@ const App: React.FC = () => {
                </span>
              )}
              <div className="flex items-center gap-2">
-                <span className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>admin@company.com</span>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs border-2 shadow-sm ${isDarkMode ? 'bg-slate-700 text-slate-300 border-slate-600' : 'bg-slate-200 text-slate-600 border-white'}`}>
-                    AD
+                <span className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{user.email}</span>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs border-2 shadow-sm overflow-hidden ${isDarkMode ? 'bg-slate-700 text-slate-300 border-slate-600' : 'bg-slate-200 text-slate-600 border-white'}`}>
+                    {user.photoURL ? <img src={user.photoURL} alt="User" className="w-full h-full object-cover" /> : user.displayName?.substring(0,2).toUpperCase() || 'U'}
                 </div>
              </div>
            </div>
@@ -100,5 +89,13 @@ const App: React.FC = () => {
     </div>
   );
 };
+
+const App: React.FC = () => {
+    return (
+        <AuthProvider>
+            <AppContent />
+        </AuthProvider>
+    );
+}
 
 export default App;

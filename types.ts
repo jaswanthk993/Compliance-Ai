@@ -8,6 +8,14 @@ export enum RiskLevel {
 
 export type IndustryType = 'Manufacturing' | 'Healthcare' | 'Finance' | 'Retail' | 'Logistics' | 'Construction' | 'Technology' | 'Energy' | 'General';
 
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName?: string;
+  photoURL?: string;
+  role: 'admin' | 'auditor' | 'viewer';
+}
+
 export interface Policy {
   id: string;
   title: string;
