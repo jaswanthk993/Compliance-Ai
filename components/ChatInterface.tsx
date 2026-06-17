@@ -127,30 +127,30 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ activePolicy }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen max-h-screen p-6 bg-slate-50 animate-in fade-in duration-500">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="flex flex-col h-[calc(100vh-80px)] max-h-[850px] animate-in fade-in duration-500">
+      <div className="flex justify-between items-end pb-6 border-b border-slate-200/60 dark:border-slate-800/60 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center">
-            <Sparkles className="w-6 h-6 text-blue-600 mr-2" />
+          <h1 className="text-4xl font-display font-medium text-slate-900 dark:text-white tracking-tight flex items-center">
+            <Sparkles className="w-8 h-8 text-indigo-600 dark:text-indigo-400 mr-3" />
             Policy Assistant
           </h1>
-          <p className="text-sm text-slate-500 ml-8">Context: <span className="font-semibold text-blue-700">{activePolicy.title}</span></p>
+          <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm ml-11">Context: <span className="font-semibold text-indigo-600 dark:text-indigo-400">{activePolicy.title}</span></p>
         </div>
         <div className="flex items-center gap-3">
             {activePolicy.isIndexed ? (
-            <div className="bg-green-100 text-green-800 text-xs px-3 py-1.5 rounded-full flex items-center border border-green-200 shadow-sm">
-                <BrainCircuit className="w-3 h-3 mr-1" />
+            <div className="bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs px-4 py-2 rounded-full flex items-center border border-emerald-200 dark:border-emerald-500/20 shadow-sm font-medium">
+                <BrainCircuit className="w-4 h-4 mr-1.5" />
                 RAG Active
             </div>
             ) : (
-            <div className="bg-amber-100 text-amber-800 text-xs px-3 py-1.5 rounded-full flex items-center border border-amber-200 animate-pulse">
-                <Info className="w-3 h-3 mr-1" />
+            <div className="bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs px-4 py-2 rounded-full flex items-center border border-amber-200 dark:border-amber-500/20 animate-pulse font-medium">
+                <Info className="w-4 h-4 mr-1.5" />
                 Training Required
             </div>
             )}
             <button 
                 onClick={handleClearChat}
-                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                className="p-2.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-colors border border-transparent hover:border-rose-200 dark:hover:border-rose-500/30"
                 title="Clear Chat History"
             >
                 <Trash2 size={18} />
@@ -158,7 +158,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ activePolicy }) => {
         </div>
       </div>
 
-      <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden relative">
+      <div className="flex-1 bg-white dark:bg-slate-900/50 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-800/60 flex flex-col overflow-hidden relative">
         
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">

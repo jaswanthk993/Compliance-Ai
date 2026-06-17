@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { AnalysisResult, RiskLevel } from '../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { AlertTriangle, CheckCircle, FileText, Activity, Download, Zap, Database, Server, Box, Cpu } from 'lucide-react';
+import { AlertTriangle, CheckCircle, FileText, Activity, Download, Zap, Database, Server, Box, Cpu, PieChart as PieChartIcon } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
 interface DashboardProps {
@@ -122,77 +122,77 @@ const Dashboard: React.FC<DashboardProps> = ({ results }) => {
   };
 
   return (
-    <div className="p-8 space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="space-y-10 animate-in fade-in duration-500">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200/60 dark:border-slate-800/60">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Compliance Overview</h1>
-          <p className="text-slate-500 mt-2">Real-time insights from your automated compliance agent.</p>
+          <h1 className="text-4xl font-display font-medium text-slate-900 dark:text-white tracking-tight">System Overview</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm max-w-2xl">Real-time telemetry and compliance insights from the continuous evaluation engine.</p>
         </div>
         <div className="flex gap-3">
             <button 
                 onClick={handleSimulateJob}
                 disabled={isSimulatingJob}
-                className="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-lg flex items-center shadow-md transition-all text-sm font-medium"
+                className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-5 py-2.5 rounded-xl flex items-center transition-all text-sm font-medium border border-slate-200/50 dark:border-slate-700/50"
             >
-                <Zap className={`w-4 h-4 mr-2 ${isSimulatingJob ? 'animate-pulse text-yellow-400' : 'text-yellow-400'}`} />
-                {isSimulatingJob ? 'Running Job...' : 'Simulate Nightly Audit'}
+                <Zap className={`w-4 h-4 mr-2.5 ${isSimulatingJob ? 'animate-pulse text-amber-500' : 'text-slate-500 dark:text-slate-400'}`} />
+                {isSimulatingJob ? 'Executing Job...' : 'Force Evaluation'}
             </button>
             <button 
                 onClick={handleDownloadReport}
                 disabled={results.length === 0}
-                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-lg flex items-center shadow-md transition-all hover:shadow-lg"
+                className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-xl flex items-center transition-all shadow-sm hover:shadow-indigo-500/20 text-sm font-medium"
             >
-                <Download className="w-4 h-4 mr-2" />
-                Download Report
+                <Download className="w-4 h-4 mr-2.5" />
+                Export Ledger
             </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <StatCard title="Compliance Score" value={`${avgScore}%`} icon={Activity} color="text-blue-600" bgColor="bg-blue-50" />
-        <StatCard title="Total Scans" value={totalScans.toString()} icon={FileText} color="text-indigo-600" bgColor="bg-indigo-50" />
-        <StatCard title="Critical Risks" value={criticalIssues.toString()} icon={AlertTriangle} color="text-red-600" bgColor="bg-red-50" />
-        <StatCard title="Audits Passed" value={`${totalScans - criticalIssues}`} icon={CheckCircle} color="text-green-600" bgColor="bg-green-50" />
+        <StatCard title="Compliance Score" value={`${avgScore}%`} icon={Activity} color="text-indigo-600 dark:text-indigo-400" bgColor="bg-indigo-50 dark:bg-indigo-500/10" border="border-indigo-100 dark:border-indigo-500/20" />
+        <StatCard title="Total Audits" value={totalScans.toString()} icon={FileText} color="text-emerald-600 dark:text-emerald-400" bgColor="bg-emerald-50 dark:bg-emerald-500/10" border="border-emerald-100 dark:border-emerald-500/20"/>
+        <StatCard title="Critical Exposures" value={criticalIssues.toString()} icon={AlertTriangle} color="text-rose-600 dark:text-rose-400" bgColor="bg-rose-50 dark:bg-rose-500/10" border="border-rose-100 dark:border-rose-500/20"/>
+        <StatCard title="Clear Nodes" value={`${totalScans - criticalIssues}`} icon={CheckCircle} color="text-slate-600 dark:text-slate-400" bgColor="bg-slate-100 dark:bg-slate-800" border="border-slate-200 dark:border-slate-700/50"/>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Compliance Trend (7 Days)</h3>
+        <div className="bg-white dark:bg-slate-900/50 p-8 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
+          <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-6 flex items-center uppercase tracking-widest"><Activity className="w-4 h-4 mr-2 text-indigo-500" /> Compliance Trend</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="name" stroke="#64748b" />
-                <YAxis stroke="#64748b" domain={[0, 100]} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }} />
-                <Line type="monotone" dataKey="score" stroke="#2563eb" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#94a3b8" domain={[0, 100]} fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', color: '#f8fafc', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
+                <Line type="stepAfter" dataKey="score" stroke="#4f46e5" strokeWidth={2} dot={{ r: 4, fill: '#4f46e5', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, strokeWidth: 0 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Risk Distribution</h3>
-          <div className="h-64 w-full flex items-center justify-center">
+        <div className="bg-white dark:bg-slate-900/50 p-8 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
+          <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-6 flex items-center uppercase tracking-widest"><PieChartIcon className="w-4 h-4 mr-2 text-indigo-500" /> Risk Distribution</h3>
+          <div className="h-56 w-full flex items-center justify-center">
              {riskDistribution.length === 0 ? (
-               <p className="text-slate-400">No data available yet</p>
+               <p className="text-slate-400 font-mono text-sm">No telemetry available.</p>
              ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={riskDistribution} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                  <Pie data={riskDistribution} cx="50%" cy="50%" innerRadius={70} outerRadius={90} paddingAngle={2} dataKey="value" stroke="none">
                     {riskDistribution.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: 'none', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#fff' }} />
                 </PieChart>
               </ResponsiveContainer>
              )}
           </div>
-          <div className="flex justify-center gap-4 mt-4">
+          <div className="flex justify-center gap-6 mt-6">
             {riskDistribution.map((entry, index) => (
-              <div key={entry.name} className="flex items-center text-sm text-slate-600">
-                <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
+              <div key={entry.name} className="flex items-center text-xs font-medium text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-full">
+                <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
                 {entry.name}
               </div>
             ))}
@@ -201,97 +201,91 @@ const Dashboard: React.FC<DashboardProps> = ({ results }) => {
       </div>
       
        {/* Reference Architecture Visualization Panel */}
-       <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-            <div className="flex items-center gap-3 mb-6">
-                <div className="bg-slate-100 p-2 rounded-lg">
-                    <Server className="w-6 h-6 text-slate-700" />
-                </div>
-                <div>
-                    <h3 className="text-lg font-bold text-slate-900">Core Architecture Summary</h3>
-                    <p className="text-xs text-slate-500">Live visualization of the deployed Reference Architecture.</p>
-                </div>
-            </div>
+       <div className="bg-slate-900 rounded-2xl p-8 border border-slate-800 overflow-hidden relative">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/40 via-slate-900 to-slate-900 pointer-events-none"></div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                 
-                 {/* 1. App Layer */}
-                 <div className="border border-indigo-100 bg-indigo-50/50 p-4 rounded-xl relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <Cpu className="w-16 h-16 text-indigo-600" />
+            <div className="relative z-10">
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="bg-indigo-500/20 p-2.5 rounded-xl border border-indigo-500/30">
+                        <Server className="w-5 h-5 text-indigo-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-display text-white">Infrastructure Topology</h3>
+                        <p className="text-xs text-indigo-200/60 font-mono mt-1">LIVE OBSERVABILITY METRICS</p>
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                     
+                     {/* 1. App Layer */}
+                     <div className="bg-slate-800/50 border border-slate-700/50 p-5 rounded-xl hover:border-slate-600 transition-colors">
+                         <h4 className="font-medium text-slate-200 text-sm mb-4 flex items-center justify-between border-b border-slate-700/50 pb-3">
+                            <span className="flex items-center"><Box className="w-4 h-4 mr-2" /> Application Edge</span>
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+                         </h4>
+                         <ul className="text-xs text-slate-400 space-y-3 font-mono">
+                             <li className="flex items-center justify-between"><span>Container</span> <span className="text-slate-300">Cloud Run</span></li>
+                             <li className="flex items-center justify-between"><span>Runtime</span> <span className="text-slate-300">Vite React SPA</span></li>
+                             <li className="flex items-center justify-between"><span>Identity</span> <span className="text-slate-300">Firebase IAM</span></li>
+                         </ul>
                      </div>
-                     <h4 className="font-bold text-indigo-900 text-sm mb-2 flex items-center">
-                        <Box className="w-4 h-4 mr-2" /> Application Layer
-                     </h4>
-                     <ul className="text-xs text-indigo-800 space-y-1.5 ml-1">
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></div>Cloud Run (Scalable)</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></div>Firebase Auth</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></div>React Frontend</li>
-                     </ul>
-                 </div>
 
-                 {/* 2. Orchestration Layer */}
-                 <div className="border border-blue-100 bg-blue-50/50 p-4 rounded-xl relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <Activity className="w-16 h-16 text-blue-600" />
+                     {/* 2. Orchestration Layer */}
+                     <div className="bg-slate-800/50 border border-slate-700/50 p-5 rounded-xl hover:border-slate-600 transition-colors">
+                         <h4 className="font-medium text-slate-200 text-sm mb-4 flex items-center justify-between border-b border-slate-700/50 pb-3">
+                            <span className="flex items-center"><Activity className="w-4 h-4 mr-2" /> Action Engine</span>
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+                         </h4>
+                         <ul className="text-xs text-slate-400 space-y-3 font-mono">
+                             <li className="flex items-center justify-between"><span>Framework</span> <span className="text-slate-300">Agentic Data Kit</span></li>
+                             <li className="flex items-center justify-between"><span>Compute</span> <span className="text-slate-300">Stateless</span></li>
+                             <li className="flex items-center justify-between"><span>Toolbox</span> <span className="text-slate-300">MCP Protocol</span></li>
+                         </ul>
                      </div>
-                     <h4 className="font-bold text-blue-900 text-sm mb-2 flex items-center">
-                        <Zap className="w-4 h-4 mr-2" /> Core Orchestration
-                     </h4>
-                     <ul className="text-xs text-blue-800 space-y-1.5 ml-1">
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>MCP Toolbox (Data Abstraction)</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>ADK Agents (Python)</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>Task Router</li>
-                     </ul>
-                 </div>
 
-                 {/* 3. Hybrid Data Layer (Polyglot) */}
-                 <div className="border border-emerald-100 bg-emerald-50/50 p-4 rounded-xl relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <Database className="w-16 h-16 text-emerald-600" />
+                     {/* 3. Hybrid Data Layer */}
+                     <div className="bg-slate-800/50 border border-slate-700/50 p-5 rounded-xl hover:border-slate-600 transition-colors">
+                         <h4 className="font-medium text-slate-200 text-sm mb-4 flex items-center justify-between border-b border-slate-700/50 pb-3">
+                            <span className="flex items-center"><Database className="w-4 h-4 mr-2" /> Data Persistence</span>
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+                         </h4>
+                         <ul className="text-xs text-slate-400 space-y-3 font-mono">
+                             <li className="flex items-center justify-between"><span>Embeddings</span> <span className="text-slate-300">MongoDB Atlas</span></li>
+                             <li className="flex items-center justify-between"><span>Metadata</span> <span className="text-slate-300">Cloud Spanner</span></li>
+                             <li className="flex items-center justify-between"><span>Assets</span> <span className="text-slate-300">Cloud Storage</span></li>
+                         </ul>
                      </div>
-                     <h4 className="font-bold text-emerald-900 text-sm mb-2 flex items-center">
-                        <Server className="w-4 h-4 mr-2" /> Hybrid Data Layer
-                     </h4>
-                     <ul className="text-xs text-emerald-800 space-y-1.5 ml-1">
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></div>MongoDB Atlas (Vector Search)</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></div>Spanner (Metadata)</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></div>SQL (Generic)</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></div>BigQuery (Analytics)</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></div>Cloud Storage (Files)</li>
-                     </ul>
-                 </div>
 
-                 {/* 4. AI Context Layer */}
-                 <div className="border border-purple-100 bg-purple-50/50 p-4 rounded-xl relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                         <CheckCircle className="w-16 h-16 text-purple-600" />
+                     {/* 4. AI Context Layer */}
+                     <div className="bg-slate-800/50 border border-slate-700/50 p-5 rounded-xl hover:border-slate-600 transition-colors">
+                         <h4 className="font-medium text-slate-200 text-sm mb-4 flex items-center justify-between border-b border-slate-700/50 pb-3">
+                            <span className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" /> Model Services</span>
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]"></span>
+                         </h4>
+                         <ul className="text-xs text-slate-400 space-y-3 font-mono">
+                             <li className="flex items-center justify-between"><span>Core</span> <span className="text-slate-300">Gemini 2.5 Flash</span></li>
+                             <li className="flex items-center justify-between"><span>Capabilities</span> <span className="text-slate-300">Multimodal, Tools</span></li>
+                             <li className="flex items-center justify-between"><span>Context</span> <span className="text-slate-300">Google Search</span></li>
+                         </ul>
                      </div>
-                     <h4 className="font-bold text-purple-900 text-sm mb-2 flex items-center">
-                        <Zap className="w-4 h-4 mr-2" /> AI & Context
-                     </h4>
-                     <ul className="text-xs text-purple-800 space-y-1.5 ml-1">
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></div>Gemini 2.5 (Multimodal)</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></div>Safety Guardrails</li>
-                         <li className="flex items-center"><div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></div>Google Search Grounding</li>
-                     </ul>
-                 </div>
 
+                </div>
             </div>
        </div>
     </div>
   );
 };
 
-const StatCard: React.FC<{ title: string; value: string; icon: any; color: string; bgColor: string }> = ({ title, value, icon: Icon, color, bgColor }) => (
-  <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm font-medium text-slate-500">{title}</p>
-        <h2 className="text-3xl font-bold text-slate-900 mt-1">{value}</h2>
+const StatCard: React.FC<{ title: string; value: string; icon: any; color: string; bgColor: string; border: string }> = ({ title, value, icon: Icon, color, bgColor, border }) => (
+  <div className={`bg-white dark:bg-slate-900/50 p-6 rounded-2xl border ${border} transition-all`}>
+    <div className="flex items-center justify-between mb-4">
+      <div className={`p-2.5 rounded-xl ${bgColor} ${color}`}>
+        <Icon size={20} strokeWidth={2.5} />
       </div>
-      <div className={`p-3 rounded-lg ${bgColor} ${color}`}>
-        <Icon size={24} />
-      </div>
+      <p className="text-xs font-semibold tracking-wider text-slate-500 uppercase">{title}</p>
+    </div>
+    <div>
+      <h2 className="text-3xl font-display font-medium text-slate-900 dark:text-white mt-1">{value}</h2>
     </div>
   </div>
 );

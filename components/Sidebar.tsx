@@ -1,8 +1,7 @@
 
 import React from 'react';
-import { LayoutDashboard, FileText, Upload, MessageSquare, PieChart, ShieldAlert, Sun, Moon, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, Upload, MessageSquare, PieChart, ShieldAlert, Sun, Moon } from 'lucide-react';
 import { Policy } from '../types';
-import { useAuth } from '../context/AuthContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -13,7 +12,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activePolicy, isDarkMode, toggleTheme }) => {
-  const { signOut } = useAuth();
   
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -24,13 +22,19 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activePolicy
   ];
 
   return (
-    <div className="w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-0 shadow-xl z-10">
-      <div className="p-6 border-b border-slate-700 flex items-center space-x-2">
-        <ShieldAlert className="w-8 h-8 text-blue-400" />
-        <span className="text-xl font-bold tracking-tight">ComplianceAI</span>
+    <div className="w-[280px] bg-slate-950 text-slate-300 flex flex-col h-screen fixed left-0 top-0 border-r border-slate-800 z-10 transition-colors">
+      <div className="p-8 border-b border-slate-900 flex items-center space-x-3 text-white">
+        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <ShieldAlert className="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <span className="text-xl font-display font-medium tracking-tight block">Copilot</span>
+          <span className="text-xs text-indigo-400 font-medium tracking-widest uppercase">Compliance AI</span>
+        </div>
       </div>
       
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-6 space-y-1 overflow-y-auto">
+        <div className="text-xs font-semibold text-slate-600 mb-4 tracking-wider uppercase ml-2 mt-4">Menu</div>
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -40,20 +44,20 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activePolicy
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                 isActive 
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50' 
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-slate-900 text-white' 
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-white'
               }`}
             >
-              <Icon size={20} />
-              <span className="font-medium">{item.label}</span>
+              <Icon size={20} className={isActive ? 'text-indigo-400' : 'text-slate-500 group-hover:text-indigo-400 transition-colors'} />
+              <span className="font-medium text-sm">{item.label}</span>
               {isChat && activePolicy && (
                 <div className="ml-auto">
                     {activePolicy.isIndexed ? (
-                         <div className="w-2.5 h-2.5 bg-green-400 rounded-full shadow-[0_0_8px_rgba(74,222,128,0.6)]" title="Agent Trained & Ready"></div>
+                         <div className="w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.5)] bg-pulse" title="Agent Trained & Ready"></div>
                     ) : (
-                         <div className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-pulse" title="Training Required"></div>
+                         <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" title="Training Required"></div>
                     )}
                 </div>
               )}
@@ -63,28 +67,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, activePolicy
       </nav>
 
       {/* Footer Actions */}
-      <div className="p-4 border-t border-slate-700 space-y-2">
+      <div className="p-6 border-t border-slate-900">
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-400 bg-slate-800/50 hover:bg-slate-800 hover:text-white rounded-lg transition-all group"
+          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-400 bg-slate-900/50 hover:bg-slate-900 hover:text-white rounded-xl transition-all group border border-slate-800/50"
         >
            <div className="flex items-center group-hover:text-slate-200">
-              {isDarkMode ? <Moon size={18} className="mr-2 text-indigo-400" /> : <Sun size={18} className="mr-2 text-amber-400" />}
-              <span>{isDarkMode ? 'Dark' : 'Light'}</span>
+              {isDarkMode ? <Moon size={16} className="mr-3 text-indigo-400" /> : <Sun size={16} className="mr-3 text-amber-400" />}
+              <span>{isDarkMode ? 'Dark Node' : 'Light Node'}</span>
            </div>
-           <div className={`w-8 h-4 rounded-full relative transition-colors duration-300 ${isDarkMode ? 'bg-indigo-600' : 'bg-slate-600'}`}>
-              <div className={`w-2.5 h-2.5 bg-white rounded-full absolute top-0.5 transition-all duration-300 shadow-sm ${isDarkMode ? 'left-5' : 'left-0.5'}`}></div>
-           </div>
-        </button>
-
-        {/* Logout Button */}
-        <button
-          onClick={() => signOut()}
-          className="w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium text-red-400 hover:bg-red-900/20 hover:text-red-300 rounded-lg transition-all"
-        >
-          <LogOut size={18} />
-          <span>Sign Out</span>
         </button>
       </div>
     </div>

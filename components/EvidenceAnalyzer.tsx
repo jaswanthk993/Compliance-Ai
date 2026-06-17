@@ -152,28 +152,28 @@ const EvidenceAnalyzer: React.FC<EvidenceAnalyzerProps> = ({ activePolicy, onAna
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto animate-in fade-in duration-500">
-      <div className="mb-8 flex justify-between items-end">
+    <div className="space-y-10 animate-in fade-in duration-500">
+      <div className="flex justify-between items-end pb-6 border-b border-slate-200/60 dark:border-slate-800/60">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Evidence Analysis</h1>
-          <p className="text-slate-500 mt-2">Active Context: <span className="font-semibold text-blue-600">{activePolicy.title}</span></p>
+          <h1 className="text-4xl font-display font-medium text-slate-900 dark:text-white tracking-tight">Evidence Analysis</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">Active Context: <span className="font-semibold text-indigo-600 dark:text-indigo-400">{activePolicy.title}</span></p>
         </div>
       </div>
 
-      <div className="flex space-x-4 mb-6 border-b border-slate-200">
+      <div className="flex space-x-6 mb-8 border-b border-slate-200/50 dark:border-slate-800/50">
           <button 
             onClick={() => setActiveTab('visual')}
-            className={`pb-3 px-1 flex items-center font-medium transition-colors border-b-2 ${activeTab === 'visual' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+            className={`pb-4 px-2 flex items-center font-medium transition-colors border-b-2 text-sm tracking-wide ${activeTab === 'visual' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
           >
               <Camera className="w-4 h-4 mr-2" />
-              Visual Inspection (Image)
+              VISUAL INSPECTION
           </button>
           <button 
             onClick={() => setActiveTab('log')}
-            className={`pb-3 px-1 flex items-center font-medium transition-colors border-b-2 ${activeTab === 'log' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+            className={`pb-4 px-2 flex items-center font-medium transition-colors border-b-2 text-sm tracking-wide ${activeTab === 'log' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
           >
               <FileSpreadsheet className="w-4 h-4 mr-2" />
-              Log Analysis (Text/CSV)
+              LOG ANALYSIS
           </button>
       </div>
 
