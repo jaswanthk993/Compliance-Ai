@@ -284,65 +284,93 @@ const EvidenceAnalyzer: React.FC<EvidenceAnalyzerProps> = ({ activePolicy, onAna
                     </div>
                 ) : (
                     <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="flex items-center justify-between bg-slate-50 p-4 rounded-lg border border-slate-100">
-                            <div>
-                                <p className="text-sm text-slate-500 mb-1">Overall Risk Level</p>
-                                <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getRiskLevelColor(currentResult.overallRisk)}`}>
-                                    {currentResult.overallRisk}
-                                </span>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-sm text-slate-500 mb-1">Compliance Score</p>
-                                <div className="flex items-baseline justify-end">
-                                    <span className="text-3xl font-bold text-slate-900">{currentResult.score}</span>
-                                    <span className="text-slate-400 text-sm">/100</span>
+                        {currentResult.evidenceStatus === 'MISMATCH' && (
+                            <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg shadow-sm">
+                                <div className="flex items-start">
+                                    <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5 mr-3 flex-shrink-0" />
+                                    <div>
+                                        <h4 className="text-sm font-bold text-amber-800 uppercase tracking-wide">Wrong Evidence Detected</h4>
+                                        <p className="text-sm text-amber-700 mt-1">
+                                            This evidence does not match the active policy. It appears to be related to <span className="font-semibold">{currentResult.suggestedPolicyType || 'another industry'}</span>. Please switch to the correct policy.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-3 flex items-center">
-                                <Info className="w-4 h-4 mr-2" /> Executive Summary
-                            </h4>
-                            <p className="text-sm text-slate-600 leading-relaxed bg-white p-3 rounded border border-slate-100 shadow-sm">
-                                {currentResult.summary}
-                            </p>
-                        </div>
-
-                        <div>
-                             <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-3 flex items-center">
-                                <AlertTriangle className="w-4 h-4 mr-2" /> Detected Violations
-                            </h4>
-                            {currentResult.violations.length === 0 ? (
-                                <div className="flex items-center p-4 bg-green-50 text-green-700 rounded-lg border border-green-100">
-                                    <CheckCircle className="w-5 h-5 mr-3" />
-                                    <span className="font-medium">No violations detected. Compliance verified.</span>
+                        )}
+                        {currentResult.evidenceStatus === 'IRRELEVANT' && (
+                            <div className="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-lg shadow-sm">
+                                <div className="flex items-start">
+                                    <AlertCircle className="w-5 h-5 text-rose-500 mt-0.5 mr-3 flex-shrink-0" />
+                                    <div>
+                                        <h4 className="text-sm font-bold text-rose-800 uppercase tracking-wide">Invalid Evidence</h4>
+                                        <p className="text-sm text-rose-700 mt-1">The uploaded file has no operational context.</p>
+                                    </div>
                                 </div>
-                            ) : (
-                                <div className="space-y-3">
-                                    {currentResult.violations.map((violation, idx) => {
-                                        const styles = getSeverityStyles(violation.severity);
-                                        return (
-                                            <div key={idx} className={`p-4 rounded-r-lg border-l-4 shadow-sm bg-white ${styles.wrapper}`}>
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div className="flex items-center gap-2">
-                                                        {styles.icon}
-                                                        <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider ${styles.badge}`}>
-                                                            {violation.severity}
-                                                        </span>
+                            </div>
+                        )}
+                        {(!currentResult.evidenceStatus || currentResult.evidenceStatus === 'MATCH') && (
+                            <>
+                                <div className="flex items-center justify-between bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                    <div>
+                                        <p className="text-sm text-slate-500 mb-1">Overall Risk Level</p>
+                                        <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getRiskLevelColor(currentResult.overallRisk)}`}>
+                                            {currentResult.overallRisk}
+                                        </span>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-sm text-slate-500 mb-1">Compliance Score</p>
+                                        <div className="flex items-baseline justify-end">
+                                            <span className="text-3xl font-bold text-slate-900">{currentResult.score}</span>
+                                            <span className="text-slate-400 text-sm">/100</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-3 flex items-center">
+                                        <Info className="w-4 h-4 mr-2" /> Executive Summary
+                                    </h4>
+                                    <p className="text-sm text-slate-600 leading-relaxed bg-white p-3 rounded border border-slate-100 shadow-sm">
+                                        {currentResult.summary}
+                                    </p>
+                                </div>
+
+                                <div>
+                                     <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-3 flex items-center">
+                                        <AlertTriangle className="w-4 h-4 mr-2" /> Detected Violations
+                                    </h4>
+                                    {currentResult.violations.length === 0 ? (
+                                        <div className="flex items-center p-4 bg-green-50 text-green-700 rounded-lg border border-green-100">
+                                            <CheckCircle className="w-5 h-5 mr-3" />
+                                            <span className="font-medium">No violations detected. Compliance verified.</span>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {currentResult.violations.map((violation, idx) => {
+                                                const styles = getSeverityStyles(violation.severity);
+                                                return (
+                                                    <div key={idx} className={`p-4 rounded-r-lg border-l-4 shadow-sm bg-white ${styles.wrapper}`}>
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <div className="flex items-center gap-2">
+                                                                {styles.icon}
+                                                                <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider ${styles.badge}`}>
+                                                                    {violation.severity}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <p className={`text-sm font-medium mb-3 ${styles.text}`}>{violation.description}</p>
+                                                        <div className="bg-white/60 p-3 rounded text-xs text-slate-600 border border-black/5">
+                                                            <span className="font-bold text-slate-700 block mb-1">Corrective Action:</span>
+                                                            {violation.recommendation}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <p className={`text-sm font-medium mb-3 ${styles.text}`}>{violation.description}</p>
-                                                <div className="bg-white/60 p-3 rounded text-xs text-slate-600 border border-black/5">
-                                                    <span className="font-bold text-slate-700 block mb-1">Corrective Action:</span>
-                                                    {violation.recommendation}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
+                            </>
+                        )}
                     </div>
                 )}
            </div>

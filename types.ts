@@ -42,6 +42,8 @@ export interface AnalysisResult {
   summary: string;
   evidenceName: string;
   evidenceType: 'image' | 'log';
+  evidenceStatus?: 'MATCH' | 'MISMATCH' | 'IRRELEVANT';
+  suggestedPolicyType?: string | null;
 }
 
 export interface ChatMessage {

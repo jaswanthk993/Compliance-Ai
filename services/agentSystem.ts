@@ -125,7 +125,7 @@ const getSeededPolicies = (): Policy[] => [
   {
     id: "seed-it-1",
     title: "Data Backup & Disaster Recovery Framework",
-    industry: "Information Technology",
+    industry: "Technology",
     content: "1. Critical production databases must be backed up incrementally every hour and fully every 24 hours.\n2. Backups must be stored in at least two geographically distinct data centers (multi-region).\n3. Restoration drills must be successfully conducted and documented at least quarterly.\n4. All backup archives must be encrypted using AES-256 at rest.",
     rules: [
       "Incremental hourly backups and full daily backups for critical DBs.",
@@ -139,7 +139,7 @@ const getSeededPolicies = (): Policy[] => [
   {
     id: "seed-it-2",
     title: "Endpoint Security & BYOD Policy",
-    industry: "Information Technology",
+    industry: "Technology",
     content: "1. All employee devices accessing corporate networks must have Mobile Device Management (MDM) installed.\n2. Full disk encryption (FileVault/BitLocker) is mandatory on all laptops.\n3. USB mass storage devices are strictly blocked from mounting on corporate workstations.\n4. Operating systems must not be jailbroken or rooted.",
     rules: [
       "MDM installation required for network access.",
@@ -153,7 +153,7 @@ const getSeededPolicies = (): Policy[] => [
   {
     id: "seed-it-3",
     title: "Access Control & Identity Management",
-    industry: "Information Technology",
+    industry: "Technology",
     content: "1. Passwords must be at least 16 characters and rotated only upon suspected compromise.\n2. System access must follow the Principle of Least Privilege (PoLP).\n3. Offboarding employees must have all authentication credentials revoked within 1 hour of termination.\n4. Shared generic accounts (e.g., 'admin' or 'root') are strictly prohibited for interactive login.",
     rules: [
       "Passwords 16+ characters, rotated upon compromise.",
@@ -167,7 +167,7 @@ const getSeededPolicies = (): Policy[] => [
   {
     id: "seed-it-4",
     title: "Clean Desk & Screen Lock Policy",
-    industry: "Information Technology",
+    industry: "Technology",
     content: "1. Workstations must be placed into a locked state immediately upon leaving the desk.\n2. Physical documents containing PII or proprietary code must be locked in drawers when not in use.\n3. Whiteboards in communal areas must be erased of sensitive architecture diagrams at the end of meetings.\n4. Post-it notes containing passwords or sensitive IPs are strictly forbidden.",
     rules: [
       "Screen lock activated immediately when leaving desk.",
@@ -511,40 +511,42 @@ export const ADKOrchestrator = {
 
     try {
       const systemInstruction = `# Role & Objective
-You are the core intelligence engine of AI Compliance Copilot, an enterprise-grade automated safety and compliance auditor. Your job is to perform deep, objective, multimodal analysis by evaluating operational evidence (site photos, CCTV frames, or system logs) against a specific corporate Standard Operating Procedure (SOP) or compliance policy.
+You are the core intelligence engine of AI Compliance Copilot, an enterprise-grade automated safety and compliance auditor. Your job is to evaluate operational evidence against a specific corporate policy.
 
 # Input Architecture
-You will be provided with two inputs:
-1. [Policy]: Text or PDF containing formal corporate rules, compliance metrics, and industry guardrails.
-2. [Evidence]: Either a multimodal asset (image/CCTV capture) or raw operational data (CSV/txt log strings).
+1. [Policy]: Text/PDF containing corporate rules.
+2. [Evidence]: Image/CCTV frame or raw log data.
 
-# Operational Protocols
-1. Zero Speculation: Do not assume violations exist. If the evidence shows compliance, award a high score and list zero violations.
-2. Absolute Grounding: Every detected violation must cite a specific section or rule explicitly stated in the provided [Policy].
-3. Actionable Remediation: For every violation found, provide a concrete, engineering-grade corrective action. Do not use generic advice like "be careful." Tell the operator exactly what infrastructure, process, or behavior to modify.
+# Evidence Cross-Match Protocol (CRITICAL)
+Before auditing, you must verify if the [Evidence] is relevant to the [Policy].
+- MATCH: The evidence contains elements governed by the active policy. Proceed with the full audit.
+- MISMATCH: The evidence is a valid workplace/operational scene, but it clearly belongs to a DIFFERENT industry or policy type (e.g., uploading a construction site photo while a Healthcare policy is active).
+- IRRELEVANT: The evidence is completely random (e.g., a selfie, a cup of coffee, a pet) and has no business context.
 
 # Output Data Schema
-You must respond strictly in valid JSON format matching the application runtime contract. Do not include markdown code block formatting (like \`\`\`json) in your final API output, return raw clean JSON:
+You must respond strictly in valid JSON format. Do not include markdown formatting (like \`\`\`json).
 
 {
+  "evidenceStatus": "MATCH" | "MISMATCH" | "IRRELEVANT",
+  "suggestedPolicyType": "If MISMATCH, guess the correct industry/policy type (e.g., 'Construction Safety', 'Financial Logs'). If MATCH or IRRELEVANT, return null.",
   "overallRisk": "LOW" | "MEDIUM" | "HIGH" | "CRITICAL",
   "score": 0-100,
-  "summary": "A concise executive summary (3-4 sentences) outlining the audit window, critical findings, and immediate operational exposure.",
+  "summary": "If MATCH: Executive summary of findings. If MISMATCH: 'Wrong evidence. This appears to belong to [suggestedPolicyType] rather than the active policy.' If IRRELEVANT: 'Invalid evidence provided.'",
   "violations": [
     {
-      "ruleId": "Explicit policy section identifier or rule title",
-      "description": "Clear explanation of what was observed in the evidence and why it fails the policy requirement.",
+      "ruleId": "Explicit policy section identifier",
+      "description": "Explanation of what was observed",
       "severity": "LOW" | "MEDIUM" | "HIGH" | "CRITICAL",
-      "recommendation": "Precise, step-by-step corrective action to rectify the violation immediately."
+      "recommendation": "Precise corrective action"
     }
   ]
 }
 
-# Severity & Scoring Calibration
-- CRITICAL (Score 0-40): Immediate life-safety hazards, unencrypted financial transfers to blacklisted territories, active breaches, or complete missing safety gear in high-risk zones.
-- HIGH (Score 41-70): Clear deviations from mandatory SOPs, missing safety elements, or unverified system overrides without supervisor authorization.
-- MEDIUM (Score 71-89): Minor technical deviations, outdated log entries, or non-hazardous procedural gaps.
-- LOW (Score 90-100): Full compliance with minor operational observations or perfectly optimized execution.`;
+# Auditing Rules (Only applies if MATCH)
+1. Zero Speculation: Do not assume violations exist.
+2. Absolute Grounding: Cite specific rules.
+3. Scoring: CRITICAL (0-40), HIGH (41-70), MEDIUM (71-89), LOW (90-100).
+If MISMATCH or IRRELEVANT, force score to 100, overallRisk to LOW, and violations to an empty array [].`;
 
       const parts: any[] = [];
       let prompt = `[Policy] Rules:\n`;
@@ -567,6 +569,8 @@ You must respond strictly in valid JSON format matching the application runtime 
           responseSchema: {
             type: Type.OBJECT,
             properties: {
+              evidenceStatus: { type: Type.STRING, enum: ['MATCH', 'MISMATCH', 'IRRELEVANT'] },
+              suggestedPolicyType: { type: Type.STRING, nullable: true },
               overallRisk: { type: Type.STRING, enum: [RiskLevel.LOW, RiskLevel.MEDIUM, RiskLevel.HIGH, RiskLevel.CRITICAL] },
               score: { type: Type.NUMBER },
               summary: { type: Type.STRING },
@@ -575,6 +579,7 @@ You must respond strictly in valid JSON format matching the application runtime 
                 items: {
                   type: Type.OBJECT,
                   properties: {
+                    ruleId: { type: Type.STRING },
                     description: { type: Type.STRING },
                     severity: { type: Type.STRING, enum: [RiskLevel.LOW, RiskLevel.MEDIUM, RiskLevel.HIGH, RiskLevel.CRITICAL] },
                     recommendation: { type: Type.STRING }
@@ -590,12 +595,14 @@ You must respond strictly in valid JSON format matching the application runtime 
       const analysisResult: AnalysisResult = {
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
-        evidenceName: evidence.filename || "Evidence Input",
-        evidenceType: evidence.type,
         overallRisk: result.overallRisk || RiskLevel.LOW,
         score: result.score || 100,
+        summary: result.summary || "No anomalies detected.",
         violations: result.violations || [],
-        summary: result.summary || "No anomalies detected."
+        evidenceName: evidence.filename || "Evidence Input",
+        evidenceType: evidence.type,
+        evidenceStatus: result.evidenceStatus,
+        suggestedPolicyType: result.suggestedPolicyType
       };
 
       await BigQuerySim.insertRow(analysisResult);
