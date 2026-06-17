@@ -158,8 +158,8 @@ const Dashboard: React.FC<DashboardProps> = ({ results }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-white dark:bg-slate-900/50 p-8 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
           <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-6 flex items-center uppercase tracking-widest"><Activity className="w-4 h-4 mr-2 text-indigo-500" /> Compliance Trend</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-64 mt-4" style={{ width: '100%', height: '100%', minWidth: 0, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
@@ -173,11 +173,11 @@ const Dashboard: React.FC<DashboardProps> = ({ results }) => {
 
         <div className="bg-white dark:bg-slate-900/50 p-8 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
           <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-6 flex items-center uppercase tracking-widest"><PieChartIcon className="w-4 h-4 mr-2 text-indigo-500" /> Risk Distribution</h3>
-          <div className="h-56 w-full flex items-center justify-center">
+          <div className="h-56 w-full flex items-center justify-center mt-4" style={{ width: '100%', height: '100%', minWidth: 0, minHeight: 0 }}>
              {riskDistribution.length === 0 ? (
                <p className="text-slate-400 font-mono text-sm">No telemetry available.</p>
              ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <PieChart>
                   <Pie data={riskDistribution} cx="50%" cy="50%" innerRadius={70} outerRadius={90} paddingAngle={2} dataKey="value" stroke="none">
                     {riskDistribution.map((entry, index) => (
